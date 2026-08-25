@@ -1,0 +1,268 @@
+﻿@model IEnumerable<UserManagement.Models.User>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">User Management</h2>
+            <p class="text-muted mb-0">
+                Manage and filter registered users
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Add User
+        </a>
+
+    </div>
+
+
+    <!-- Filter Card -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0 fw-semibold">
+                Search & Filter
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Index" method="get">
+
+                <div class="row g-3">
+
+                    <!-- Name -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Name
+                        </label>
+
+                        <input type="text"
+                               name="name"
+                               value="@Context.Request.Query["name"]"
+                               class="form-control"
+                               placeholder="Search by name" />
+
+                    </div>
+
+
+                    <!-- Gender -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Gender
+                        </label>
+
+                        <select name="gender" class="form-select">
+
+                            <option value="">All Genders</option>
+
+                            @if (Context.Request.Query["gender"] == "Male")
+                            {
+                                <option value="Male" selected>Male</option>
+                            }
+                            else
+                            {
+                                <option value="Male">Male</option>
+                            }
+
+                            @if (Context.Request.Query["gender"] == "Female")
+                            {
+                                <option value="Female" selected>Female</option>
+                            }
+                            else
+                            {
+                                <option value="Female">Female</option>
+                            }
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Country -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Country
+                        </label>
+
+                        <input type="text"
+                               name="country"
+                               value="@Context.Request.Query["country"]"
+                               class="form-control"
+                               placeholder="Search by country" />
+
+                    </div>
+
+
+                    <!-- Nationality -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Nationality
+                        </label>
+
+                        <input type="text"
+                               name="nationality"
+                               value="@Context.Request.Query["nationality"]"
+                               class="form-control"
+                               placeholder="Search by nationality" />
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2 mt-4">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Search
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Clear
+                    </a>
+
+                    <div class="ms-auto d-flex gap-2">
+
+                        <a asp-action="DownloadPdf"
+                           asp-route-name="@Context.Request.Query["name"]"
+                           asp-route-gender="@Context.Request.Query["gender"]"
+                           asp-route-country="@Context.Request.Query["country"]"
+                           asp-route-nationality="@Context.Request.Query["nationality"]"
+                           class="btn btn-outline-danger">
+                            Download PDF
+                        </a>
+
+                        <a asp-action="Print"
+                           asp-route-name="@Context.Request.Query["name"]"
+                           asp-route-gender="@Context.Request.Query["gender"]"
+                           asp-route-country="@Context.Request.Query["country"]"
+                           asp-route-nationality="@Context.Request.Query["nationality"]"
+                           target="_blank"
+                           class="btn btn-outline-success">
+                            Print Report
+                        </a>
+
+                        <a asp-action="DownloadExcel"
+                           asp-route-name="@Context.Request.Query["name"]"
+                           asp-route-gender="@Context.Request.Query["gender"]"
+                           asp-route-country="@Context.Request.Query["country"]"
+                           asp-route-nationality="@Context.Request.Query["nationality"]"
+                           class="btn btn-success">
+                            Download Excel
+                        </a>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- User List -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-semibold">
+                    Users
+                </h5>
+
+                <span class="badge bg-primary">
+                    @Model.Count() Records
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Country</th>
+                        <th>Nationality</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        foreach (var user in Model)
+                        {
+                            <tr>
+
+                                <td class="fw-semibold">
+                                    @user.Name
+                                </td>
+
+                                <td>
+                                    @user.Email
+                                </td>
+
+                                <td>
+                                    @user.Gender
+                                </td>
+
+                                <td>
+                                    @user.Country
+                                </td>
+
+                                <td>
+                                    @user.Nationality
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center py-5 text-muted">
+
+                                No users found matching your filters.
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
