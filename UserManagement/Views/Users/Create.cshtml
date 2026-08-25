@@ -122,7 +122,20 @@
                         <span asp-validation-for="Nationality"
                               class="text-danger small"></span>
                     </div>
+                    <!-- Status -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="IsActive" class="form-label fw-semibold">
+                            Status <span class="text-danger">*</span>
+                        </label>
 
+                        <select asp-for="IsActive" class="form-select">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+
+                        <span asp-validation-for="IsActive"
+                              class="text-danger small"></span>
+                    </div>
                 </div>
 
                 <hr class="my-4" />
@@ -156,4 +169,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-```

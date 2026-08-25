@@ -20,7 +20,8 @@ namespace UserManagement.Controllers
     string? name,
     string? gender,
     string? country,
-    string? nationality)
+    string? nationality,
+    string? status)
         {
             var users = _context.Users.AsQueryable();
 
@@ -42,6 +43,17 @@ namespace UserManagement.Controllers
             if (!string.IsNullOrEmpty(nationality))
             {
                 users = users.Where(u => u.Nationality.Contains(nationality));
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "Active")
+                {
+                    users = users.Where(u => u.IsActive);
+                }
+                else if (status == "Inactive")
+                {
+                    users = users.Where(u => !u.IsActive);
+                }
             }
 
             return View(users.ToList());
@@ -51,28 +63,46 @@ namespace UserManagement.Controllers
     string? name,
     string? gender,
     string? country,
-    string? nationality)
+    string? nationality,
+    string? status)
         {
             var users = _context.Users.AsQueryable();
 
+            // Name filter
             if (!string.IsNullOrEmpty(name))
             {
                 users = users.Where(u => u.Name.Contains(name));
             }
 
+            // Gender filter
             if (!string.IsNullOrEmpty(gender))
             {
                 users = users.Where(u => u.Gender == gender);
             }
 
+            // Country filter
             if (!string.IsNullOrEmpty(country))
             {
                 users = users.Where(u => u.Country.Contains(country));
             }
 
+            // Nationality filter
             if (!string.IsNullOrEmpty(nationality))
             {
                 users = users.Where(u => u.Nationality.Contains(nationality));
+            }
+
+            // Status filter
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "Active")
+                {
+                    users = users.Where(u => u.IsActive);
+                }
+                else if (status == "Inactive")
+                {
+                    users = users.Where(u => !u.IsActive);
+                }
             }
 
             var userList = users.ToList();
@@ -85,14 +115,17 @@ namespace UserManagement.Controllers
                 {
                     page.Margin(30);
 
+                    // Header
                     page.Header()
                         .Text("User Report")
                         .FontSize(20)
                         .Bold();
 
+                    // Content
                     page.Content()
                         .Table(table =>
                         {
+                            // 6 columns
                             table.ColumnsDefinition(columns =>
                             {
                                 columns.RelativeColumn();
@@ -100,27 +133,67 @@ namespace UserManagement.Controllers
                                 columns.RelativeColumn();
                                 columns.RelativeColumn();
                                 columns.RelativeColumn();
+                                columns.RelativeColumn();
                             });
 
+                            // Table Header
                             table.Header(header =>
                             {
-                                header.Cell().Element(CellStyle).Text("Name");
-                                header.Cell().Element(CellStyle).Text("Email");
-                                header.Cell().Element(CellStyle).Text("Gender");
-                                header.Cell().Element(CellStyle).Text("Country");
-                                header.Cell().Element(CellStyle).Text("Nationality");
+                                header.Cell()
+                                    .Element(CellStyle)
+                                    .Text("Name");
+
+                                header.Cell()
+                                    .Element(CellStyle)
+                                    .Text("Email");
+
+                                header.Cell()
+                                    .Element(CellStyle)
+                                    .Text("Gender");
+
+                                header.Cell()
+                                    .Element(CellStyle)
+                                    .Text("Country");
+
+                                header.Cell()
+                                    .Element(CellStyle)
+                                    .Text("Nationality");
+
+                                header.Cell()
+                                    .Element(CellStyle)
+                                    .Text("Status");
                             });
 
+                            // Table Data
                             foreach (var user in userList)
                             {
-                                table.Cell().Element(CellStyle).Text(user.Name);
-                                table.Cell().Element(CellStyle).Text(user.Email);
-                                table.Cell().Element(CellStyle).Text(user.Gender);
-                                table.Cell().Element(CellStyle).Text(user.Country);
-                                table.Cell().Element(CellStyle).Text(user.Nationality);
+                                table.Cell()
+                                    .Element(CellStyle)
+                                    .Text(user.Name);
+
+                                table.Cell()
+                                    .Element(CellStyle)
+                                    .Text(user.Email);
+
+                                table.Cell()
+                                    .Element(CellStyle)
+                                    .Text(user.Gender);
+
+                                table.Cell()
+                                    .Element(CellStyle)
+                                    .Text(user.Country);
+
+                                table.Cell()
+                                    .Element(CellStyle)
+                                    .Text(user.Nationality);
+
+                                table.Cell()
+                                    .Element(CellStyle)
+                                    .Text(user.IsActive ? "Active" : "Inactive");
                             }
                         });
 
+                    // Footer
                     page.Footer()
                         .AlignCenter()
                         .Text($"Generated on {DateTime.Now:dd-MM-yyyy HH:mm}");
@@ -145,7 +218,8 @@ namespace UserManagement.Controllers
     string? name,
     string? gender,
     string? country,
-    string? nationality)
+    string? nationality,
+    string? status)
         {
             var users = _context.Users.AsQueryable();
 
@@ -168,36 +242,65 @@ namespace UserManagement.Controllers
             {
                 users = users.Where(u => u.Nationality.Contains(nationality));
             }
-
+            // Status filter
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "Active")
+                {
+                    users = users.Where(u => u.IsActive);
+                }
+                else if (status == "Inactive")
+                {
+                    users = users.Where(u => !u.IsActive);
+                }
+            }
             return View(users.ToList());
         }
 
         public IActionResult DownloadExcel(
-    string? name,
-    string? gender,
-    string? country,
-    string? nationality)
+            string? name,
+            string? gender,
+            string? country,
+            string? nationality,
+            string? status)
         {
             var users = _context.Users.AsQueryable();
 
+            // Name filter
             if (!string.IsNullOrWhiteSpace(name))
             {
                 users = users.Where(u => u.Name.Contains(name));
             }
 
+            // Gender filter
             if (!string.IsNullOrWhiteSpace(gender))
             {
                 users = users.Where(u => u.Gender == gender);
             }
 
+            // Country filter
             if (!string.IsNullOrWhiteSpace(country))
             {
                 users = users.Where(u => u.Country.Contains(country));
             }
 
+            // Nationality filter
             if (!string.IsNullOrWhiteSpace(nationality))
             {
                 users = users.Where(u => u.Nationality.Contains(nationality));
+            }
+
+            // Status filter
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                if (status == "Active")
+                {
+                    users = users.Where(u => u.IsActive);
+                }
+                else if (status == "Inactive")
+                {
+                    users = users.Where(u => !u.IsActive);
+                }
             }
 
             var userList = users.ToList();
@@ -208,17 +311,17 @@ namespace UserManagement.Controllers
 
             // Title
             worksheet.Cell(1, 1).Value = "USER REPORT";
-            worksheet.Range(1, 1, 1, 5).Merge();
+            worksheet.Range(1, 1, 1, 6).Merge();
 
             worksheet.Cell(2, 1).Value =
                 $"Generated: {DateTime.Now:dd-MM-yyyy HH:mm}";
 
-            worksheet.Range(2, 1, 2, 5).Merge();
+            worksheet.Range(2, 1, 2, 6).Merge();
 
             worksheet.Cell(3, 1).Value =
                 $"Total Records: {userList.Count}";
 
-            worksheet.Range(3, 1, 3, 5).Merge();
+            worksheet.Range(3, 1, 3, 6).Merge();
 
             // Headers
             worksheet.Cell(5, 1).Value = "Name";
@@ -226,6 +329,7 @@ namespace UserManagement.Controllers
             worksheet.Cell(5, 3).Value = "Gender";
             worksheet.Cell(5, 4).Value = "Country";
             worksheet.Cell(5, 5).Value = "Nationality";
+            worksheet.Cell(5, 6).Value = "Status";
 
             // Data
             int row = 6;
@@ -237,12 +341,14 @@ namespace UserManagement.Controllers
                 worksheet.Cell(row, 3).Value = user.Gender;
                 worksheet.Cell(row, 4).Value = user.Country;
                 worksheet.Cell(row, 5).Value = user.Nationality;
+                worksheet.Cell(row, 6).Value =
+                    user.IsActive ? "Active" : "Inactive";
 
                 row++;
             }
 
             // Formatting
-            var headerRange = worksheet.Range(5, 1, 5, 5);
+            var headerRange = worksheet.Range(5, 1, 5, 6);
 
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.LightBlue;
