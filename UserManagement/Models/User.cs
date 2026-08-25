@@ -21,5 +21,7 @@ namespace UserManagement.Models
 
         [Required]
         public string Nationality { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 }

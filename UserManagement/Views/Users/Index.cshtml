@@ -119,6 +119,40 @@
 
                     </div>
 
+
+                    <!-- Status -->
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">
+                            Status
+                        </label>
+
+                        <select name="status" class="form-select">
+
+                            <option value="">All Statuses</option>
+
+                            @if (Context.Request.Query["status"] == "Active")
+                            {
+                                <option value="Active" selected>Active</option>
+                            }
+                            else
+                            {
+                                <option value="Active">Active</option>
+                            }
+
+                            @if (Context.Request.Query["status"] == "Inactive")
+                            {
+                                <option value="Inactive" selected>Inactive</option>
+                            }
+                            else
+                            {
+                                <option value="Inactive">Inactive</option>
+                            }
+
+                        </select>
+
+                    </div>
+
                 </div>
 
 
@@ -137,33 +171,42 @@
 
                     <div class="ms-auto d-flex gap-2">
 
+                        <!-- PDF -->
                         <a asp-action="DownloadPdf"
                            asp-route-name="@Context.Request.Query["name"]"
                            asp-route-gender="@Context.Request.Query["gender"]"
                            asp-route-country="@Context.Request.Query["country"]"
                            asp-route-nationality="@Context.Request.Query["nationality"]"
+                           asp-route-status="@Context.Request.Query["status"]"
                            class="btn btn-outline-danger">
                             Download PDF
                         </a>
 
+
+                        <!-- Print -->
                         <a asp-action="Print"
                            asp-route-name="@Context.Request.Query["name"]"
                            asp-route-gender="@Context.Request.Query["gender"]"
                            asp-route-country="@Context.Request.Query["country"]"
                            asp-route-nationality="@Context.Request.Query["nationality"]"
+                           asp-route-status="@Context.Request.Query["status"]"
                            target="_blank"
                            class="btn btn-outline-success">
                             Print Report
                         </a>
 
+
+                        <!-- Excel -->
                         <a asp-action="DownloadExcel"
                            asp-route-name="@Context.Request.Query["name"]"
                            asp-route-gender="@Context.Request.Query["gender"]"
                            asp-route-country="@Context.Request.Query["country"]"
                            asp-route-nationality="@Context.Request.Query["nationality"]"
+                           asp-route-status="@Context.Request.Query["status"]"
                            class="btn btn-success">
                             Download Excel
                         </a>
+
                     </div>
 
                 </div>
@@ -207,6 +250,7 @@
                         <th>Gender</th>
                         <th>Country</th>
                         <th>Nationality</th>
+                        <th>Status</th>
                     </tr>
 
                 </thead>
@@ -240,6 +284,21 @@
                                     @user.Nationality
                                 </td>
 
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            Inactive
+                                        </span>
+                                    }
+                                </td>
+
                             </tr>
                         }
                     }
@@ -247,7 +306,7 @@
                     {
                         <tr>
 
-                            <td colspan="5"
+                            <td colspan="6"
                                 class="text-center py-5 text-muted">
 
                                 No users found matching your filters.
